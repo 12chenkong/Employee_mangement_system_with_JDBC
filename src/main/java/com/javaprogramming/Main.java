@@ -38,6 +38,7 @@ public class Main {
                     break;
                 case 2:
                     em.showAllEmployee();
+                    RederTable.pressKey();
                     break;
                 case 3:
                     System.out.println("Please enter employee's id to see detail");

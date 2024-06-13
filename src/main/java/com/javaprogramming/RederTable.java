@@ -5,12 +5,14 @@ import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
 
+import java.util.Scanner;
+
 public class RederTable {
     public static void rederMenu   (){
         CellStyle cellStyle=new CellStyle(CellStyle.HorizontalAlign.CENTER);
         Table table=new Table(2, BorderStyle.UNICODE_BOX_HEAVY_BORDER, ShownBorders.SURROUND_HEADER_AND_COLUMNS);
         table.setColumnWidth(0,5,10);
-        table.setColumnWidth(1,20,70);
+        table.setColumnWidth(1,10,100   );
         table.addCell("NO",cellStyle);
         table.addCell("PLease choose",cellStyle);
         table.addCell("1",cellStyle);
@@ -45,7 +47,10 @@ public class RederTable {
         System.out.println(table.render());
     }
 
-    public static void main(String[] args) {
+   public  static void pressKey(){
+       Scanner scanner=new Scanner(System.in);
+       scanner.nextLine();
+       scanner.nextLine();
+   }
 
-    }
 }
