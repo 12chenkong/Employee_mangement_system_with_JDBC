@@ -44,6 +44,7 @@ public class Main {
                     System.out.println("Please enter employee's id to see detail");
                     int id=scanner.nextInt();
                     em.showEmployeeBasedOnId(id);
+                    RederTable.pressKey();
                     break;
                 case 4:
                     System.out.println("Enter employee's id: ");
@@ -61,7 +62,7 @@ public class Main {
                 case 6:
                    RederTable.thanksMessage();
                     break;
-                default:
+                    default:
                     System.out.println("Invalid input please try again!!");
 
             }

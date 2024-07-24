@@ -1,10 +1,8 @@
 package com.javaprogramming;
-
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 import org.nocrala.tools.texttablefmt.Table;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,13 +34,16 @@ public class employeeimplement implements employeeInterface{
     @Override
     public void showAllEmployee() {
         con=JDBCconnection.CreateConnection();
-        String  query="SELECT*FROM employee";
-//        System.out.println("\t\t\t\tHere are employee's info");
+        String  query="SELECT*FROM employee ORDER BY name";
+        int totalSalary=0;
+        int totalEmployee=0;
+
         try {
             Statement statement= con.createStatement();
             ResultSet result=statement.executeQuery(query);
             CellStyle cellStyle=new CellStyle(CellStyle.HorizontalAlign.CENTER);
             Table table=new Table(4, BorderStyle.UNICODE_ROUND_BOX_WIDE, ShownBorders.SURROUND_HEADER_AND_COLUMNS);
+            Table table1=new Table(2, BorderStyle.UNICODE_ROUND_BOX_WIDE, ShownBorders.SURROUND_HEADER_AND_COLUMNS);
             table.setColumnWidth(0,10,15);
             table.setColumnWidth(1,10,20);
             table.setColumnWidth(2,10,20);
@@ -53,22 +54,28 @@ public class employeeimplement implements employeeInterface{
             table.addCell("AGE",cellStyle);
             table.addCell("SALARY",cellStyle);
             boolean status=true;
-                while (result.next()){
-                    // Tell sal which column to you want to fetch
-                    status=false;
-                    table.addCell(String.valueOf(result.getInt("id")), cellStyle);
-                    table.addCell(String.valueOf(result.getString("name")),cellStyle);
-                    table.addCell(String.valueOf(result.getInt("age")),cellStyle);
-                    table.addCell(String.valueOf(result.getInt("salary")+"$"),cellStyle);
-                System.out.println(table.render());
 
-            }
-                if(status){
+                    while (result.next()){
+                        // Tell sql which column to you want to fetch
+                        status=false;
+                        table.addCell(String.valueOf(result.getInt("id")), cellStyle);
+                        table.addCell(String.valueOf(result.getString("name")),cellStyle);
+                        table.addCell(String.valueOf(result.getInt("age")),cellStyle);
+                        table.addCell((String.valueOf(result.getInt("salary"))+"$"),cellStyle);
+                        totalSalary=totalSalary+result.getInt("salary");
+                        totalEmployee++;
 
-                    table.addCell("No information",cellStyle,4);
+                    }
+                    // creating another table for total employees and salary
+                    table1.addCell("Total:",cellStyle);
+                    table1.addCell("Employees",cellStyle);
+                    table1.addCell((String.valueOf(totalSalary)+"$"),cellStyle);
+                    table1.addCell(String.valueOf(totalEmployee),cellStyle);
                     System.out.println(table.render());
+                    System.out.println(table1.render());
 
-                }
+
+
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -77,17 +84,28 @@ public class employeeimplement implements employeeInterface{
 
     @Override
     public void showEmployeeBasedOnId(int id) {
+        CellStyle cellStyle=new CellStyle(CellStyle.HorizontalAlign.CENTER);
+        Table table=new Table(4, BorderStyle.UNICODE_ROUND_BOX_WIDE, ShownBorders.SURROUND_HEADER_AND_COLUMNS);
         try {
             String query="SELECT*FROM employee WHERE id="+id;
             con=JDBCconnection.CreateConnection();
-            Statement statement= con.createStatement();
-           ResultSet resul= statement.executeQuery(query);
+            PreparedStatement preparedStatement= con.prepareStatement(query);
+           ResultSet resul= preparedStatement.executeQuery(query);
+            table.setColumnWidth(0,10,15);
+            table.setColumnWidth(1,10,20);
+            table.setColumnWidth(2,10,20);
+            table.setColumnWidth(3,10,20);
+            // adding cells to the table
+            table.addCell("ID",cellStyle);
+            table.addCell("NAME",cellStyle);
+            table.addCell("AGE",cellStyle);
+            table.addCell("SALARY",cellStyle);
             while (resul.next()){
-                System.out.print(resul.getInt(1)+" ");
-                System.out.print(resul.getString(2)+" ");
-                System.out.print(resul.getInt(3)+" ");
-                System.out.print(resul.getInt(4)+"$");
-                System.out.println();
+                table.addCell(String.valueOf(resul.getInt(1)),cellStyle);
+                table.addCell(String.valueOf(resul.getString(2)),cellStyle);
+                table.addCell(String.valueOf(resul.getInt(3)),cellStyle);
+                table.addCell(String.valueOf(resul.getInt("salary")+"$"),cellStyle);
+                System.out.println(table.render());
             }
 
 
@@ -104,6 +122,7 @@ public class employeeimplement implements employeeInterface{
         con=JDBCconnection.CreateConnection();
         try{
             PreparedStatement st=con.prepareStatement(query);
+
             st.setInt(2,id);
             st.setString(1,name);
             System.out.println( st.executeUpdate());
